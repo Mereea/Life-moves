@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Life Moves</title>
+<meta name="description" content="A free choice-based life game. Make everyday decisions, watch your Wellbeing, Relationships, and Progress, and discover 30 story endings.">
+<meta name="theme-color" content="#fff4dc">
+<meta property="og:title" content="Life Moves">
+<meta property="og:description" content="A free choice-based life game with daily challenges, story arcs, and 30 endings.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%A7%AD%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#fff4dc;--dot:rgba(90,70,150,.3);--card:#ffffff;--tx:#2b2250;--mu:#5a5180;--ink:#2b2250;--sh:#2b2250;--ac:#7c4dff;--ok:#0f9d76;--bad:#e5484d;--c1:#ffb3c7;--c2:#a8dcff;--c3:#ffe27a;--c4:#b6f0c4;--m1:#2dc98f;--m2:#ff5fa0;--m3:#3d85ff;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1c1538;--dot:rgba(200,180,255,.24);--card:#2a2150;--tx:#f6efff;--mu:#c3b6ea;--ink:#a794f0;--sh:#0d0820;--ac:#a58bff;--ok:#43d9a8;--bad:#ff7a80;--c1:#5a2d63;--c2:#27476f;--c3:#5e4f1e;--c4:#2a5a45;--m1:#43d9a8;--m2:#ff8fbd;--m3:#7aa8ff}}
+:root[data-theme="dark"]{--bg:#1c1538;--dot:rgba(200,180,255,.24);--card:#2a2150;--tx:#f6efff;--mu:#c3b6ea;--ink:#a794f0;--sh:#0d0820;--ac:#a58bff;--ok:#43d9a8;--bad:#ff7a80;--c1:#5a2d63;--c2:#27476f;--c3:#5e4f1e;--c4:#2a5a45;--m1:#43d9a8;--m2:#ff8fbd;--m3:#7aa8ff}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;color:var(--tx);background:var(--bg) radial-gradient(circle at 1px 1px,var(--dot) 1.6px,transparent 0) 0 0/22px 22px;font:17px/1.5 "Fredoka","Nunito","Trebuchet MS",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;overflow-x:hidden}
+main{position:relative;z-index:1;max-width:560px;margin:0 auto;padding:20px 16px 48px}
+h1{font-size:40px;line-height:1.05;margin:8px 0 14px;color:var(--ac);font-weight:700}
+@supports ((-webkit-background-clip:text) or (background-clip:text)){h1 .g{background:linear-gradient(90deg,#ff5fa0,#ffb000,#2dc98f,#3d85ff,#7c4dff,#ff5fa0);background-size:300% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;animation:shine 6s linear infinite}h1{animation:bob 3s ease-in-out infinite}}
+p{margin:0 0 12px}
+.mu{color:var(--mu)}.sm{font-size:14px}
+.card{background:var(--card);border:3px solid var(--ink);border-radius:22px;box-shadow:5px 5px 0 var(--sh);padding:16px;margin-bottom:18px;animation:bounceIn .75s cubic-bezier(.2,.9,.3,1.2) backwards}
+.meters{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px}
+.meters>div{background:var(--card);border:3px solid var(--ink);border-radius:16px;box-shadow:3px 3px 0 var(--sh);padding:8px 9px}
+.meters>div:nth-child(1){animation:bounceIn .6s .0s cubic-bezier(.2,.9,.3,1.2) backwards}
+.meters>div:nth-child(2){animation:bounceIn .6s .1s cubic-bezier(.2,.9,.3,1.2) backwards}
+.meters>div:nth-child(3){animation:bounceIn .6s .2s cubic-bezier(.2,.9,.3,1.2) backwards}
+.meters>div.upb{animation:bumpUp .9s ease}
+.meters>div.dnb{animation:bumpDn .8s ease}
+.mt{font-size:12px;font-weight:600;color:var(--tx);white-space:nowrap}
+.bar{height:14px;background:rgba(125,110,190,.25);border:2px solid var(--ink);border-radius:99px;overflow:hidden;margin-top:5px}
+.bar i{display:block;height:100%;background-color:var(--ac);background-image:repeating-linear-gradient(45deg,rgba(255,255,255,.3) 0 8px,transparent 8px 16px);background-size:22px 22px;border-radius:99px;transition:width 1.2s cubic-bezier(.34,1.56,.64,1);animation:stripes 1s linear infinite}
+.meters>div:nth-child(1) .bar i{background-color:var(--m1)}
+.meters>div:nth-child(2) .bar i{background-color:var(--m2)}
+.meters>div:nth-child(3) .bar i{background-color:var(--m3)}
+.bar.low i{background-color:var(--bad)!important}
+.bar.low{animation:wob .4s ease-in-out infinite alternate}
+button{font:inherit;font-weight:500;color:var(--tx);background:var(--card);border:3px solid var(--ink);border-radius:18px;box-shadow:4px 4px 0 var(--sh);padding:14px 16px;width:100%;text-align:left;margin-bottom:14px;cursor:pointer;transition:transform .18s cubic-bezier(.3,1.6,.5,1),box-shadow .18s}
+button:nth-of-type(odd){animation:slideL .65s cubic-bezier(.2,.9,.3,1.2) backwards}
+button:nth-of-type(even){animation:slideR .65s cubic-bezier(.2,.9,.3,1.2) backwards}
+button:nth-of-type(2){animation-delay:.08s}button:nth-of-type(3){animation-delay:.16s}button:nth-of-type(4){animation-delay:.24s}button:nth-of-type(5){animation-delay:.32s}button:nth-of-type(6){animation-delay:.4s}button:nth-of-type(7){animation-delay:.48s}
+button:nth-of-type(4n+1){background:var(--c1)}
+button:nth-of-type(4n+2){background:var(--c2)}
+button:nth-of-type(4n+3){background:var(--c3)}
+button:nth-of-type(4n+4){background:var(--c4)}
+button:hover{transform:translate(-3px,-4px) rotate(-.8deg) scale(1.02);box-shadow:8px 8px 0 var(--sh)}
+button:active{transform:translate(3px,3px) scale(.97);box-shadow:1px 1px 0 var(--sh)}
+button.pri,#an{display:block;width:100%;margin-left:0;margin-right:0;rotate:0deg}
+.modes{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:4px 0 18px}
+.modes button{margin:0;min-height:96px;text-align:center;font-size:18px;padding:12px 10px}
+.modes button small{font-size:13px;margin-top:4px}
+.modes button[data-m="Story"]{grid-column:1/-1;order:-1;min-height:88px;font-size:21px;background:var(--ac);color:#fff}
+.modes button[data-m="Story"] small{color:#fff}
+button.pri{background:var(--ac);color:#fff;font-weight:700;font-size:19px;text-align:center;animation:bounceIn .75s cubic-bezier(.2,.9,.3,1.2) backwards,jiggle 3.2s ease-in-out 1.4s infinite}
+button.pri:hover{animation:none}
+button small{display:block;color:var(--mu);font-weight:400;font-size:14px}
+.fb{border-left:6px solid var(--ac);background:rgba(124,77,255,.12);border-radius:0 12px 12px 0;padding:10px 12px;margin:12px 0;animation:rise .6s .25s ease backwards}
+.d{font-size:16px;font-weight:700}
+.up,.dn{display:inline-block;font-weight:700;animation:popBig .9s cubic-bezier(.3,1.8,.5,1) backwards}
+.up{color:var(--ok)}.dn{color:var(--bad)}
+.step{font-size:14px;font-weight:600;color:var(--mu);margin-bottom:10px;display:flex;justify-content:space-between}
+.pill{display:inline-block;background:var(--c3);color:var(--tx);border:2px solid var(--ink);border-radius:99px;padding:3px 12px;font-size:14px;font-weight:600;margin:0 6px 6px 0;animation:popBig .8s cubic-bezier(.3,1.8,.5,1) backwards}
+.ev{color:var(--bad);font-weight:700}.gd{color:var(--ok);font-weight:700}
+summary{cursor:pointer}
+.sup{display:block;text-align:center;margin:6px 0 14px;font-weight:600;color:var(--ac);text-decoration:none;border:3px dashed var(--ink);border-radius:18px;padding:12px}
+.cf{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:50}
+.cf i{position:absolute;top:-20px;width:10px;height:16px;border-radius:2px;animation:fall linear forwards}
+.shake{animation:shake .7s}
+@keyframes bounceIn{0%{opacity:0;transform:scale(.5) rotate(-6deg) translateY(50px)}60%{opacity:1;transform:scale(1.07) rotate(1.5deg)}100%{transform:none}}
+@keyframes slideL{0%{opacity:0;transform:translateX(-90px) rotate(-4deg)}65%{transform:translateX(10px) rotate(1deg)}100%{opacity:1;transform:none}}
+@keyframes slideR{0%{opacity:0;transform:translateX(90px) rotate(4deg)}65%{transform:translateX(-10px) rotate(-1deg)}100%{opacity:1;transform:none}}
+@keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+@keyframes popBig{0%{opacity:0;transform:scale(0) rotate(-25deg)}100%{opacity:1;transform:none}}
+@keyframes jiggle{0%,68%,100%{transform:none}72%{transform:rotate(-3deg) scale(1.05)}77%{transform:rotate(3deg) scale(1.05)}82%{transform:rotate(-2deg)}87%{transform:rotate(2deg)}}
+@keyframes bumpUp{0%{transform:none}30%{transform:scale(1.2) rotate(-3deg)}60%{transform:scale(.96) rotate(1.5deg)}100%{transform:none}}
+@keyframes bumpDn{0%,100%{transform:none}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
+@keyframes shake{0%,100%{transform:none}15%{transform:translateX(-12px) rotate(-1deg)}30%{transform:translateX(10px) rotate(1deg)}45%{transform:translateX(-8px)}60%{transform:translateX(6px)}75%{transform:translateX(-3px)}}
+@keyframes stripes{to{background-position:22px 0}}
+@keyframes shine{to{background-position:300% 0}}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+@keyframes wob{from{transform:rotate(-1.5deg)}to{transform:rotate(1.5deg)}}
+@keyframes fall{to{transform:translateY(112vh) rotate(720deg)}}
+html.noanim *,html.noanim *::before,html.noanim *::after{animation:none!important;transition:none!important}
+</style>
+</head>
+<body>
+<main id="app"></main>
+<script>
+// o = [text, [wellbeing, relationships, progress], style tag, feedback, optional ripple id]
+var S=[
+{t:"A friend invites you out tonight. Tomorrow you have something important to finish.",o:[
+["Go for an hour, then head home and work.",[2,6,-2],"C","A good balance, and a slightly shorter night."],
+["Stay in and work. There will be other nights.",[-6,-8,10],"D","Progress is safe, but your friend notices a pattern."],
+["Go all night and deal with tomorrow later.",[8,6,-14],"P","A great night, and a problem waiting for you.","cram"]]},
+{t:"You get a job offer with much higher pay, in a city far from your family.",o:[
+["Take it. This is the chance.",[-4,-12,14],"D","Big step forward, and a quieter phone on Sundays."],
+["Negotiate for a hybrid or remote option.",[-3,4,3],"C","Takes courage, and the outcome is uncertain."],
+["Decline and stay close to home.",[4,10,-8],"P","Warm and stable, and you wonder “what if” sometimes."]]},
+{t:"You are tired all the time, even after sleeping.",o:[
+["Take a real weekend off, with no tasks.",[12,2,-8],"C","Rest works, and some things have to wait."],
+["Push through. You will rest when this is done.",[-12,-4,10],"D","Output holds for now, and your body keeps the bill.","crash"],
+["Scroll and binge shows to switch off.",[2,-2,-6],"A","It feels like rest and does not restore much."]]},
+{t:"A close friend made a hurtful comment in front of others.",o:[
+["Tell them calmly later that it hurt.",[-2,10,0],"C","Uncomfortable, and it keeps the friendship honest.","mend"],
+["Say it is fine and swallow it.",[-6,-4,0],"P","Peaceful today, and it sits inside you.","resent"],
+["Quietly spend less time with them.",[2,-12,2],"A","No conflict, and the friendship fades without a word."]]},
+{t:"You have had a project idea for years and never started it.",o:[
+["Start with 30 minutes a day.",[-3,0,10],"C","Small steps. It is slow but real.","spark"],
+["Wait until you have more time and money.",[2,2,-8],"A","Comfortable, and the idea stays in a drawer."],
+["Quit everything and go all in.",[-10,-8,14],"D","Bold. The upside is huge, and so is the stress."]]},
+{t:"A relative keeps asking for favors, and you are running out of energy.",o:[
+["Set a kind, clear limit.",[6,-2,4],"C","A bit of guilt, then a lot of breathing room.","space"],
+["Say yes to everything to keep the peace.",[-10,6,-6],"P","Everyone is happy except you.","resent"],
+["Stop answering their calls.",[4,-10,0],"A","Instant relief, and a bigger issue later.","dist"]]},
+{t:"Your roommate or partner is not doing their share at home.",o:[
+["Raise it with specific examples and ask what would help.",[-2,6,4],"C","Awkward for ten minutes, and things improve."],
+["Keep doing it all yourself.",[-8,-4,4],"P","The house is clean, and you are not happy."],
+["Leave passive-aggressive notes.",[-2,-10,2],"A","The dishes get done, but the mood does not."]]},
+{t:"A friend asks to borrow a significant amount of money.",o:[
+["Lend a small amount you can afford to lose.",[-2,8,-4],"P","A fair compromise, and you have to let go of the money."],
+["Say no kindly and offer other help.",[4,-2,4],"C","Your finances are safe, and the friend may feel let down."],
+["Lend the full amount. They are a friend.",[-8,6,-10],"P","Generous, and now it sits between you."]]},
+{t:"Someone you know just posted a big success. You feel a pang.",o:[
+["Congratulate them, then look at your own plan.",[4,6,2],"C","You turn envy into direction."],
+["Scroll for an hour comparing yourself.",[-10,-2,-4],"A","The pang grows and nothing changes.","scroll"],
+["Work harder to prove yourself.",[-8,-4,10],"D","Fuel for progress, at a personal cost."]]},
+{t:"You just moved to a new city and you do not know anyone.",o:[
+["Join a class or club, even if it feels awkward.",[-2,10,4],"C","Awkward at first, and it opens doors.","tribe"],
+["Wait for people to reach out.",[-4,-8,0],"A","Waiting is quiet, and so is the apartment."],
+["Throw yourself into work.",[-2,-6,10],"D","Great for progress, lonely for everything else."]]},
+{t:"You keep postponing a health check-up.",o:[
+["Book it today.",[6,0,-3],"C","One small task, a lot of peace of mind.","relief"],
+["Plan to do it next month.",[-2,0,2],"A","Easy today, and next month is the same story.","skip"],
+["Search symptoms online for hours.",[-8,-2,-4],"A","More anxiety, not more answers."]]},
+{t:"You made a big mistake at work or school and it might be noticed.",o:[
+["Own it and suggest a fix.",[-3,6,6],"C","A short sting and a long-term gain in trust.","trust"],
+["Hide it and hope no one notices.",[-8,-8,2],"A","The stress follows you around.","found"],
+["Explain it as someone else’s fault.",[-2,-8,2],"D","You avoid the heat, and people remember it."]]},
+{t:"You have a completely free weekend with no obligations.",o:[
+["See friends or family, and let the plans be simple.",[4,8,-2],"C","Warm and connecting. Your to-do list can wait."],
+["Catch up on chores and long-term goals.",[-4,0,8],"D","Productive, and you may feel like you worked all weekend."],
+["Do absolutely nothing.",[8,-2,-2],"A","Restful, and a bit empty if it becomes a habit."]]},
+{t:"Someone you admire offers to mentor you, but it will take real time.",o:[
+["Accept and make time for it.",[-4,4,10],"C","A busy few months for a big long-term gain."],
+["Politely decline because you are too busy.",[4,-2,-6],"A","Your schedule stays calm, and the chance passes."],
+["Accept, then rarely follow up.",[-2,-4,-2],"P","It is nice in theory, and they notice the silence."]]},
+{t:"You receive an unexpected bonus or a gift of money.",o:[
+["Save most of it and treat yourself a little.",[4,0,6],"C","Sensible, and you still enjoy a part of it."],
+["Take a trip with friends.",[8,8,-8],"P","Memories for life and a lighter wallet."],
+["Put it all into a risky idea.",[-8,-2,12],"D","Big upside, and a lot of sleepless nights."]]},
+{t:"Your family expects you to spend the holidays together, but you badly need rest.",o:[
+["Go and enjoy it, and skip your own plans.",[-2,8,-4],"P","Everyone is happy, and you are tired."],
+["Visit for a day and explain you need quiet time.",[4,4,0],"C","A fair balance, and you may need to explain it twice."],
+["Skip it and tell them at the last minute.",[4,-10,0],"A","You rest, and they are hurt by how it was done."]]},
+{t:"Your routine feels dull and you feel stuck.",o:[
+["Change one small thing this week.",[4,2,4],"C","Small shifts add up to momentum."],
+["Make a drastic change, like a new job or city.",[-6,-4,10],"D","Exciting and risky. It could work out well."],
+["Wait until motivation shows up.",[-6,0,-6],"A","Motivation is a late guest."]]},
+{t:"You see someone being treated unfairly in front of you.",o:[
+["Speak up calmly in the moment.",[-3,6,2],"C","Brave, and it shows people what is acceptable."],
+["Stay quiet and hope it passes.",[-6,-4,0],"A","It passes, and the feeling stays."],
+["Check in with them privately afterwards.",[2,6,0],"P","Kind and safe, though the moment is gone."]]},
+{t:"There is a sale on something you do not really need.",o:[
+["Wait 48 hours before deciding.",[2,0,4],"C","Most impulses fade, and some real needs stay."],
+["Buy it now. It is a bargain.",[4,0,-6],"A","A quick lift and a thinner wallet."],
+["Buy it as a gift for someone.",[2,6,-4],"P","Generous, and a bit of an excuse."]]},
+{t:"Someone you like asks you out, and you are nervous.",o:[
+["Say yes.",[-2,10,-2],"C","Nerves, and a real chance at something good."],
+["Suggest a casual coffee first.",[2,5,0],"C","Low pressure and easy to enjoy."],
+["Say “not now” and hope they ask again.",[-4,-4,0],"A","The moment passes quietly."]]},
+{t:"You have an exam in a week and a lot to learn.",o:[
+["Make a daily plan and stick to it.",[-2,0,10],"C","Not exciting, and it works."],
+["Study with friends.",[4,6,2],"P","Fun and social, and sometimes more chat than study."],
+["Start in the last two days.",[-8,0,6],"A","It can work, and it is rough.","cram"]]},
+{t:"It is midnight and you could watch one more episode.",o:[
+["Go to bed.",[8,0,-2],"C","Tomorrow you will be glad."],
+["Watch one more, then another.",[-8,0,-2],"A","One became three and the alarm is near.","scroll"],
+["Work a bit more instead.",[-6,0,6],"D","A small gain now and a tired morning."]]},
+{t:"A neighbor asks for help moving a heavy couch on your day off.",o:[
+["Help for an hour.",[-2,8,-2],"P","Neighborly, and your day shrinks."],
+["Offer to help another day.",[0,4,0],"C","Kind and honest about your limits."],
+["Politely decline.",[4,-2,0],"C","You rest, and they find someone else."]]},
+{t:"Your boss asks you to take on extra work with no extra pay.",o:[
+["Say yes to stay on their good side.",[-8,2,4],"P","Appreciated, and now it is the norm."],
+["Ask what to drop, or how it will be rewarded.",[0,-2,6],"C","A fair question that gets a real answer."],
+["Say no right away.",[4,-6,-4],"D","Your time is safe, and the tone is tense."]]},
+{t:"Your phone buzzes with notifications all evening.",o:[
+["Mute everything for a couple of hours.",[6,-2,2],"C","Peace, and a few messages wait."],
+["Check each one. You cannot help it.",[-6,2,-4],"A","Connected and scattered."],
+["Delete a few apps.",[6,-4,4],"D","Drastic and effective."]]},
+{t:"You started a new habit, like exercise, and missed three days.",o:[
+["Restart with a smaller goal.",[4,0,4],"C","Small and sustainable."],
+["Quit. You have already failed.",[-6,0,-6],"A","Three missed days are not a failure."],
+["Double the effort to catch up.",[-6,0,6],"D","Intense and hard to keep up."]]},
+{t:"A friend cancels plans at the last minute, again.",o:[
+["Tell them it bothers you.",[-2,6,0],"C","Honest and a little awkward.","mend"],
+["Say “no problem” and swallow it.",[-4,-2,0],"P","Easy now, and it builds up.","resent"],
+["Stop making plans with them.",[2,-8,0],"A","Less disappointment, and less friendship."]]},
+{t:"You are invited to speak or present in front of a group.",o:[
+["Say yes and prepare well.",[-4,4,10],"C","Scary and rewarding."],
+["Say yes, then wing it.",[-6,-2,4],"P","It could go fine, and the stress is real."],
+["Decline.",[4,-2,-6],"A","Safe, and an opportunity is gone."]]},
+{t:"You find a wallet on the street with cash and an ID inside.",o:[
+["Return it to the address on the ID.",[2,6,-2],"C","It costs you an evening, and it feels right."],
+["Hand it in at the nearest police station.",[0,2,-1],"C","Simple and responsible."],
+["Keep the cash and mail the wallet back.",[-6,-4,4],"A","The money helps, and it sits on your conscience."]]},
+{t:"A stray dog follows you all the way home.",o:[
+["Spend a few days trying to find its owner.",[-2,6,-3],"C","Patient and kind, and a bit of a detour."],
+["Adopt it right away.",[-6,4,-8],"P","A big commitment, made in a second.","",[[10,10,-2],"It turns out to be the best decision of the year.",0.5]],
+["Call animal rescue and wait with it.",[2,2,0],"C","Safe for everyone."],
+["Ignore it and go inside.",[0,-4,0],"A","It looks at the door for a while."]]},
+{t:"Friends invite you on a surprise trip abroad. You would leave in two days.",o:[
+["Say yes and pack tonight.",[-2,6,-8],"P","Impulsive and exciting.","",[[10,10,-4],"It becomes a story you tell for years.",0.6]],
+["Say it is too sudden.",[4,-4,2],"A","Calm, and a bit of regret."],
+["Suggest a later date.",[0,2,0],"C","Reasonable, and the moment may pass."]]},
+{t:"Your friends push you to sing at karaoke night.",o:[
+["Sing solo and give it everything.",[-2,8,0],"P","A brave choice.","",[[6,12,2],"You bring the house down and everyone is cheering.",0.5]],
+["Sing a duet with a friend.",[2,8,0],"C","Fun and shared."],
+["Politely refuse.",[2,-4,0],"A","Safe, and a bit on the sidelines."]]},
+{t:"It is your best friend’s birthday and you only just remembered.",o:[
+["Call and apologize sincerely.",[-2,6,0],"C","Honest, and it means more than a late gift."],
+["Throw together a last-minute dinner.",[-4,10,-4],"P","Chaotic, and it is heartfelt."],
+["Send a quick message as if you remembered.",[0,-6,0],"A","They can tell."]]},
+{t:"You suspect your friend’s partner is not being faithful.",o:[
+["Tell your friend what you saw, calmly.",[-6,4,0],"C","A hard conversation, and a true friend’s move."],
+["Confront the partner first.",[-6,-2,0],"D","Direct, and it can backfire."],
+["Say nothing.",[-4,-8,0],"A","It is easier now, and it weighs on you."]]},
+{t:"You win a small award and everyone is clapping.",o:[
+["Thank the people who helped you.",[4,8,2],"C","Generous, and it is remembered."],
+["Soak it in and enjoy it.",[8,2,2],"P","You earned it."],
+["Brush it off awkwardly.",[-4,-2,0],"A","The moment passes before you enjoy it."]]},
+{t:"Your commute is long and boring.",o:[
+["Listen to a book or podcast.",[2,0,6],"C","Time you quietly gain back."],
+["Call a friend or family member.",[2,6,-2],"P","A small connection each day."],
+["Scroll and zone out.",[2,0,-2],"A","Relaxing, and nothing sticks."]]},
+{t:"Your landlord announces a rent increase.",o:[
+["Negotiate and show you have researched prices.",[-2,0,6],"C","A bit stressful, and often worth it."],
+["Accept it and cut other costs.",[-4,0,2],"P","Peaceful, and you tighten the budget."],
+["Start looking for a new place.",[-6,-2,4],"D","Tiring, and sometimes a great find.","",[[4,0,8],"You find a cheaper place that you love more.",0.4]]]},
+{t:"A younger cousin asks you for life advice.",o:[
+["Share honestly what you learned, including mistakes.",[2,8,2],"C","Real, and it helps both of you."],
+["Give a confident pep talk.",[4,4,0],"P","Encouraging, though a little polished."],
+["Say “I don’t know, really.”",[-2,-2,0],"A","Honest, and a missed chance."]]},
+{t:"You made something, a song or a drawing, and you are unsure about showing it.",o:[
+["Post it online.",[-4,2,2],"D","Exposed and proud.","",[[8,8,6],"It resonates with strangers and the messages pour in.",0.4]],
+["Show a close friend first.",[2,6,2],"C","Safe feedback and a boost."],
+["Keep it in a drawer.",[2,-2,-4],"A","Safe, and unseen."]]},
+{t:"Someone cuts in line in front of you and you are in a hurry.",o:[
+["Say politely that the line starts back there.",[-2,2,0],"C","Calm and firm."],
+["Let it go and breathe.",[4,0,-2],"C","You save your energy."],
+["Complain loudly.",[-6,-4,0],"D","A moment of satisfaction and a worse mood."]]},
+{t:"An old friend has just lost a family member.",o:[
+["Show up in person and just be there.",[-2,10,-2],"C","It takes time and it matters most."],
+["Send a message and offer to help later.",[0,4,0],"P","Kind, and a bit distant."],
+["Wait until they reach out.",[0,-8,0],"A","They may think you do not care."]]},
+{t:"A friend asks you to join their risky new venture.",o:[
+["Join with a small commitment.",[-4,4,4],"C","Careful, with room to grow."],
+["Go all in.",[-10,-4,-10],"D","A real gamble.","",[[8,6,16],"It takes off, and you are glad you jumped.",0.35]],
+["Politely decline.",[4,0,-4],"A","Safe, and you wonder how it would have gone."]]},
+{t:"You realize you have not laughed in a while.",o:[
+["Call the funniest person you know.",[6,6,0],"C","Laughter is contagious."],
+["Watch a comedy alone.",[4,0,-2],"A","Light and easy."],
+["Push on. There is too much to do.",[-4,-2,4],"D","Productive, and a little gray."]]},
+{t:"You need a gift for a close friend, and you have a small budget.",o:[
+["Make something personal by hand.",[2,8,-2],"C","Thoughtful, and it takes real time."],
+["Buy something expensive to impress them.",[-2,4,-8],"P","Generous, and your wallet feels it."],
+["Skip the gift and plan a day out together.",[4,8,-2],"C","Memories last longer than objects."]]},
+{t:"Your phone dies in a city you do not know.",o:[
+["Ask a local for directions.",[-2,6,0],"C","Awkward, and often a lovely surprise."],
+["Wander until you find your way.",[-4,0,0],"D","Adventure or a long walk.","",[[4,4,0],"You stumble onto a hidden gem and a great story.",0.4]],
+["Find a café, charge up, and plan.",[2,2,-2],"C","Calm and sensible."]]},
+{t:"You cook for guests and the main dish goes wrong.",o:[
+["Laugh about it and order takeout together.",[4,8,0],"C","The mood stays warm and the night is saved."],
+["Improvise a new dish on the spot.",[-2,2,0],"D","Risky and brave.","",[[6,8,0],"The improvised dish is a hit and the best of the evening.",0.5]],
+["Apologize all night.",[-6,-2,0],"A","The guests are fine, and you are not."]]},
+{t:"You realize you pay for a subscription you never use.",o:[
+["Cancel it right now.",[0,0,4],"C","A tiny win that adds up."],
+["Review and cancel all your subscriptions.",[-2,0,8],"D","A boring hour with a real payoff."],
+["Keep it. You might use it someday.",[0,0,-4],"A","Someday keeps costing money."]]},
+{t:"You get a message saying you won a prize if you click a link.",o:[
+["Ignore it and delete it.",[2,0,2],"C","Smart and quick."],
+["Warn a friend who might fall for it.",[2,4,2],"P","A small act of care."],
+["Click to check.",[-6,0,-8],"A","Curiosity can be expensive."]]},
+{t:"Your home is messy, and it is weighing on your mood.",o:[
+["Tidy for fifteen minutes.",[4,0,2],"C","Small effort and a big change in mood."],
+["Deep clean the whole weekend.",[-2,0,4],"D","A fresh start, and a lost weekend."],
+["Ignore it.",[-4,0,-2],"A","The mess grows and so does the mood."]]},
+{t:"A friend asks you to cover for them with their boss.",o:[
+["Refuse and explain why.",[-2,-2,0],"C","Honest, and they may be annoyed."],
+["Suggest they tell the truth themselves.",[0,2,0],"C","Supportive without lying."],
+["Lie for them.",[-6,4,0],"P","Loyal, and now you are part of it."]]},
+{t:"Nobody wants to lead the group project.",o:[
+["Take the lead.",[-4,2,8],"D","Control and workload."],
+["Suggest sharing the leadership.",[0,4,4],"C","Fair and collaborative."],
+["Stay passive and wait.",[-2,-4,-4],"A","The project drifts."]]},
+{t:"Your neighbor plays loud music late at night.",o:[
+["Knock politely and ask.",[-2,2,0],"C","Direct and friendly."],
+["Complain to the landlord right away.",[0,-4,0],"D","Efficient, and the relationship suffers."],
+["Wear earplugs and endure it.",[-4,0,0],"A","Peace now and tired tomorrow."]]},
+{t:"A friend invites you on a hike you are not fit for.",o:[
+["Join and go at your own pace.",[4,6,0],"C","Fresh air and good company."],
+["Join and push too hard.",[-6,2,0],"D","You keep up, and you pay the next day."],
+["Decline, feeling embarrassed.",[-2,-4,0],"A","Safe, and a missed memory."]]},
+{t:"A parent needs more of your time as they get older.",o:[
+["Plan regular visits and calls.",[-2,10,-2],"C","It takes time and it matters."],
+["Arrange help and visit when you can.",[2,4,2],"P","Practical, and they miss you."],
+["Hope someone else will step in.",[-4,-8,0],"A","It does not go away."]]},
+{t:"A sibling brags about their success again.",o:[
+["Congratulate them and mean it.",[2,6,0],"C","Generous, and you feel lighter."],
+["Compare yourself and sulk.",[-6,-4,0],"A","Nothing changes except your mood."],
+["Change the subject.",[0,-2,0],"A","Smooth and a little cold."]]},
+{t:"You have a job interview tomorrow.",o:[
+["Prepare calmly and get a good night’s sleep.",[4,0,8],"C","Steady and effective."],
+["Cram all night.",[-6,0,4],"D","Prepared and exhausted."],
+["Wing it.",[2,0,-4],"P","Confident and risky.","",[[4,0,10],"Your natural charm lands the job.",0.35]]]},
+{t:"You are offered a promotion that would take you away from work you love.",o:[
+["Take it for the growth.",[-4,0,10],"D","Higher up, and less joy."],
+["Decline to keep what you enjoy.",[6,0,-6],"A","Happy now, and a closed door."],
+["Negotiate a role that keeps some of both.",[0,0,6],"C","Creative and fair."]]},
+{t:"Someone on the bus looks unwell.",o:[
+["Ask if they are okay.",[-2,6,0],"C","A small act of kindness."],
+["Tell the driver.",[0,2,0],"C","Helpful and not awkward."],
+["Pretend not to notice.",[0,-4,0],"A","Easy, and it sticks with you."]]},
+{t:"You bump into an ex unexpectedly.",o:[
+["Say hello warmly and keep it short.",[-2,4,0],"C","Mature and calm."],
+["Avoid them.",[2,-2,0],"A","Safe and a little silly."],
+["Make small talk for too long.",[-4,0,0],"P","Awkward for both."]]},
+{t:"A teacher who helped you years ago comes to mind.",o:[
+["Write them a thank-you message.",[4,8,0],"C","A message that may brighten their year."],
+["Visit them in person.",[-2,6,0],"P","Effort and meaning.","",[[6,12,0],"They are moved, and you leave with a full heart.",0.5]],
+["Think about it and never write.",[0,-2,0],"A","The moment passes."]]},
+{t:"A friend tags you in an embarrassing photo.",o:[
+["Ask them to take it down.",[-2,2,0],"C","Clear and polite."],
+["Laugh and leave it up.",[2,2,0],"P","Easygoing, and your cheeks are red."],
+["Post a worse one of them.",[-4,-4,0],"D","Revenge is petty."]]},
+{t:"You have been avoiding a boring task for weeks.",o:[
+["Do ten minutes of it now.",[2,0,6],"C","Starting is the hardest part."],
+["Clear a whole day for it.",[-4,0,8],"D","Big effort and a big relief."],
+["Keep avoiding it.",[-6,0,-6],"A","The pressure builds.","cram"]]},
+{t:"A friend vents to you constantly, and it drains your energy.",o:[
+["Set a gentle boundary.",[2,2,0],"C","Honest, and good for both of you."],
+["Keep listening endlessly.",[-8,6,0],"P","Loyal, and you run on empty.","resent"],
+["Stop answering their calls.",[4,-8,0],"A","Relief, and a lost friend."]]},
+{t:"You are offered a chance to try a zip line.",o:[
+["Do it.",[-2,4,0],"P","Scary and exciting.","",[[10,8,0],"Pure adrenaline and a huge grin.",0.55]],
+["Cheer for your friends from the ground.",[2,4,0],"P","Supportive and safe."],
+["Skip it.",[2,-2,0],"A","Comfortable and a little regretful."]]},
+{t:"It rains on the day you planned an outdoor event with friends.",o:[
+["Move it indoors and make it cozy.",[2,8,0],"C","Cozy and creative."],
+["Go ahead and get soaked.",[-2,6,0],"P","Silly and memorable.","",[[6,10,0],"The rain becomes the best part of the day.",0.4]],
+["Cancel it.",[2,-4,0],"A","Dry and a little flat."]]},
+{t:"A new colleague seems lost in their first week.",o:[
+["Offer to show them around.",[-2,6,2],"C","A friendly start for them."],
+["Give them a long list of tips.",[-2,2,2],"D","Useful, and a bit overwhelming."],
+["Let them figure it out.",[0,-4,0],"A","They remember it."]]},
+{t:"You have extra things at home that you do not need.",o:[
+["Donate them.",[2,4,-2],"C","Someone else needs them."],
+["Sell them online.",[0,0,4],"D","Extra cash and extra effort."],
+["Keep them just in case.",[-2,0,-2],"A","The clutter stays."]]},
+{t:"Your neighborhood is organizing a cleanup day.",o:[
+["Join and bring a friend.",[-2,8,0],"C","Good for the street and the soul."],
+["Donate instead of joining.",[0,2,2],"P","Helpful and distant."],
+["Skip it.",[2,-2,0],"A","A free weekend and nothing gained."]]},
+{t:"A new AI tool could handle part of your work.",o:[
+["Learn it step by step.",[-2,0,10],"C","A small investment that pays off."],
+["Rely on it fully.",[-4,0,6],"D","Faster and a bit risky."],
+["Ignore it.",[2,0,-6],"A","Comfortable today, and the gap grows."]]},
+{t:"You want to save for something big, but it feels far away.",o:[
+["Automate a small monthly amount.",[2,0,8],"C","Quiet and effective."],
+["Take on a side gig.",[-6,-2,12],"D","Faster, with a cost to your time."],
+["Wait until you earn more.",[0,0,-4],"A","Later never arrives."]]},
+{t:"Your family comments on your life choices at dinner.",o:[
+["Thank them for caring and say it is your call.",[0,2,2],"C","Calm and firm."],
+["Argue back.",[-6,-6,0],"D","The dinner is ruined."],
+["Stay silent and fume.",[-4,-2,0],"A","It sits with you all night."]]},
+{t:"You have a quiet evening with nothing planned.",o:[
+["Journal or reflect.",[6,0,2],"C","Calm and clear."],
+["Call someone you miss.",[2,6,0],"P","A small connection."],
+["Fill it with chores.",[-2,0,4],"D","Productive and not restful."]]},
+{t:"You are asked to join yet another committee.",o:[
+["Decline politely.",[4,-2,-2],"C","Your time is protected."],
+["Say yes to please everyone.",[-6,4,2],"P","Appreciated, and overbooked."],
+["Say yes and quietly drop the ball.",[-4,-6,-4],"A","Worse than saying no."]]},
+{t:"Your best friend is moving to another country.",o:[
+["Plan regular calls and a visit.",[-2,8,0],"C","Distance is easier with a plan."],
+["Let the friendship fade naturally.",[0,-8,0],"A","A quiet loss."],
+["Become sad and distant now.",[-6,-4,0],"A","You miss the time you have left."]]},
+{t:"A friend says they are fine, but you doubt it.",o:[
+["Check in again, gently.",[-2,6,0],"C","Care without pressure."],
+["Show up with their favorite snack.",[0,8,-2],"P","A hug in food form."],
+["Take their word and move on.",[0,-2,0],"A","Sometimes right, sometimes not."]]},
+{t:"Someone shares a secret with you, and another person starts asking about it.",o:[
+["Keep it and change the subject.",[-2,2,0],"C","Trust kept."],
+["Drop a hint.",[0,-6,0],"P","A hint is still a leak."],
+["Tell them everything.",[2,-10,0],"A","A secret once shared is gone."]]},
+{t:"A course you want costs a month of your savings.",o:[
+["Take the course.",[-4,0,8],"D","A real investment in yourself."],
+["Look for a free alternative.",[0,0,4],"C","Resourceful and good enough."],
+["Skip it.",[2,0,-4],"A","Safe and stuck."]]},
+{t:"You are stuck in traffic and will be late for something important.",o:[
+["Call ahead and update them calmly.",[2,2,2],"C","Respectful and stress-reducing."],
+["Drive aggressively.",[-6,-2,2],"D","Faster, maybe, and stressful."],
+["Give up and go home.",[2,-4,-6],"A","Relief, and a missed chance."]]},
+{t:"You have a long weekend with loved ones, but money is tight.",o:[
+["Plan free activities together.",[4,8,2],"C","Creative and fun."],
+["Spend anyway. You deserve it.",[4,6,-8],"P","Joyful, and the bill arrives."],
+["Stay home and stress about money.",[-6,-2,0],"A","The weekend slips away."]]},
+{t:"A friend asks for your honest opinion on their business idea.",o:[
+["Be kind and honest.",[-2,4,2],"C","Truth with care."],
+["Say it is great.",[-2,-4,0],"P","Comforting, and unhelpful."],
+["Say nothing and quietly disappear.",[0,-6,0],"A","They notice the silence."]]}
+];
+var FU={
+cram:{t:"Ripple effect: the deadline you pushed is now due tomorrow, and you have not slept.",o:[
+["Pull an all-nighter and finish it.",[-12,-2,10],"D","Done, and you pay for it for days."],
+["Ask for a short extension and be honest.",[-2,2,-2],"C","Humbling, and it keeps the quality up."]]},
+crash:{t:"Ripple effect: your body forces a stop. You get sick and have to cancel plans.",o:[
+["Rest fully and apologize to the people you cancelled on.",[10,-2,-6],"C","You recover, and the lesson sticks."],
+["Keep going anyway.",[-10,-4,4],"D","You keep moving, and recovery gets longer."]]},
+resent:{t:"Ripple effect: resentment boils over and you snap at someone who did not deserve it.",o:[
+["Apologize and explain what has been building up.",[4,8,0],"C","Vulnerable, and it clears the air."],
+["Pretend nothing happened.",[-6,-8,0],"A","It sits there between you both."]]},
+skip:{t:"Ripple effect: a worrying symptom is back and it is harder to ignore.",o:[
+["Book an appointment urgently.",[4,0,-4],"C","Better late than never."],
+["Keep waiting and hope it fades.",[-12,-2,2],"A","The worry grows every day."]]},
+dist:{t:"Ripple effect: the relative shows up unannounced, upset that you have been ignoring them.",o:[
+["Sit down and have the honest conversation now.",[-2,6,0],"C","Uncomfortable, and overdue."],
+["Make excuses and hope it settles.",[-6,-8,0],"A","They hear the excuses."]]},
+found:{t:"Ripple effect: the mistake comes to light, and people know you tried to hide it.",o:[
+["Take full responsibility without excuses.",[-6,4,0],"C","It stings, and it is the start of repair."],
+["Deflect again.",[-10,-12,0],"A","Now there are two problems."]]},
+scroll:{t:"Ripple effect: an hour became three. You feel behind and irritable.",o:[
+["Put the phone away and go for a walk.",[6,0,-2],"C","A small reset that works."],
+["Keep scrolling to feel better.",[-8,-2,-4],"A","It does not feel better."]]},
+mend:{t:"Good ripple: your friend apologizes and says your honesty made them think.",o:[
+["Accept warmly and plan something together.",[6,8,0],"C","The friendship is stronger than before."],
+["Accept, and ask for what you need going forward.",[2,6,4],"C","Clear needs make for easier friendships."]]},
+spark:{t:"Good ripple: your daily habit pays off. You show someone your first draft and they love it.",o:[
+["Share it more widely.",[2,6,6],"C","Feedback and fresh energy."],
+["Keep refining it quietly.",[4,0,8],"D","Steady, though you miss out on feedback."]]},
+tribe:{t:"Good ripple: someone from the club invites you to a weekend plan.",o:[
+["Say yes, even if you are nervous.",[6,10,0],"C","The start of a real friendship."],
+["Politely decline because you are tired.",[2,-2,0],"A","Rest is fine, and the invite may not come twice."]]},
+trust:{t:"Good ripple: your honesty is noticed, and you are offered a bigger responsibility.",o:[
+["Take on the challenge.",[-4,4,10],"D","Growth, with some pressure."],
+["Accept, but agree on limits first.",[2,2,6],"C","Smart, and sustainable."]]},
+space:{t:"Good ripple: with some breathing room, you find energy for something you enjoy.",o:[
+["Pick up an old hobby again.",[8,2,2],"C","A bit of joy goes a long way."],
+["Use the time to rest.",[10,0,-2],"A","Recovery has its own value."]]},
+relief:{t:"Good ripple: the check-up goes well and you finally relax.",o:[
+["Celebrate with a walk with a friend.",[6,6,0],"C","Good news is better shared."],
+["Use the new energy to tackle a long-delayed task.",[2,0,6],"D","Momentum from peace of mind."]]}
+};
+var EV=[
+["You find a forgotten note of money in an old coat.",[2,0,4]],
+["An old friend messages you out of the blue just to say hi.",[4,6,0]],
+["A stranger compliments you and it brightens your whole day.",[4,2,0]],
+["You get a surprise day off.",[8,0,0]],
+["A project you nearly forgot gets great feedback.",[2,2,6]],
+["The weather is perfect, and you take a long walk.",[6,0,0]],
+["A neighbor drops off fresh baked bread.",[3,4,0]],
+["Someone pays for your coffee.",[2,2,0]],
+["Your phone falls and the screen cracks.",[-2,0,-6]],
+["A sudden cold keeps you in bed for two days.",[-8,0,-4]],
+["Your train is delayed and you arrive late and stressed.",[-4,0,-4]],
+["Your laptop crashes and you lose some work.",[-4,0,-8]],
+["A pipe leaks at home and needs fixing right away.",[-4,0,-6]],
+["You have a bad night of sleep for no reason.",[-6,0,-2]],
+["A friend calls late at night, going through something hard.",[-2,6,-2]],
+["An unexpected bill arrives.",[-2,0,-6]],
+["A cousin visits unannounced for the weekend.",[-2,6,-2]],
+["A call from a relative turns into a long, warm chat.",[2,6,-2]]
+];
+var JP=[
+["You win a small prize in a draw you had forgotten you entered.",[6,4,24]],
+["An opportunity lands in your lap from a contact you helped months ago.",[6,8,24]],
+["Friends throw you a surprise party, and you feel truly loved.",[16,24,2]],
+["You wake up fully rested and everything just clicks today.",[22,8,12]]
+];
+var XD=[
+["A storm damages your home and you have to deal with urgent repairs.",[-18,0,-24]],
+["A nasty illness takes weeks to recover from.",[-26,-6,-12]],
+["Someone close to you has a health scare, and everything else pauses.",[-14,-8,-18]],
+["Your bag is stolen with your phone and wallet inside.",[-10,-4,-24]]
+];
+var RS={
+X:[
+["Ask people you trust for help.",[2,8,2],"C","You do not carry it alone, and it brings you closer."],
+["Tough it out on your own.",[-6,-4,6],"D","You stay in control, and it costs you."],
+["Pause everything and recover first.",[10,0,-8],"A","Your body and mind thank you, and your plans slow down."],
+["Hope it sorts itself out.",[-4,-2,-6],"A","A gamble on luck.","",[[8,4,6],"It sorts itself out much better than you feared.",0.3]]
+],
+J:[
+["Share it with the people who matter.",[4,12,-4],"P","Generosity multiplies the joy."],
+["Invest it in your future.",[-2,0,10],"C","Sensible, and it pays off later."],
+["Treat yourself and enjoy it fully.",[10,2,-6],"P","Savor it. You earned it."],
+["Go bigger and push your luck.",[-4,-2,-6],"D","A bold bet.","",[[6,6,18],"It pays off even bigger than expected.",0.4]]
+]
+};
+function O(a,d,g,f,k,v,al){return [a,d,g,f,"",al||null,k?[k,v]:null]}
+var STORY=[
+function(F){return {t:"Chapter 1: The Move. You have just moved to a new city for a new job. The apartment is small and the boxes are still piled up. It is Saturday, and work starts on Monday.",o:[
+O("Explore the neighborhood on foot.",[4,4,0],"C","You find a café, a park, and a quiet street you love.","a","explorer"),
+O("Call your closest friend back home.",[2,6,-2],"P","A familiar voice makes the new place feel less foreign.","a","rooted"),
+O("Prepare for Monday all weekend.",[-4,0,8],"D","You are ready, and the apartment is still full of boxes.","a","driven")]}},
+function(F){var a=F.a==="explorer"?"You already know a good café nearby.":F.a==="rooted"?"You are still thinking of home.":"You are still thinking about your to-do list.";return {t:"Chapter 2: The First Week. "+a+" A coworker invites you to lunch, and it is a chance to start something.",o:[
+O("Join them and ask about their life.",[-2,8,2],"C","It is a bit awkward at first, and then it is easy.","b","friend"),
+O("Suggest a quick coffee instead.",[0,4,2],"C","Short and low pressure, and it opens a door.","b","friend"),
+O("Politely decline and keep working.",[2,-4,4],"D","You stay on task, and the invitation may not come twice.","b","solo")]}},
+function(F){var t=F.b==="friend"?"You have a friendly face at work, and still an odd loneliness at night.":"The evenings are quiet, and the city feels big.";
+var f=F.b==="friend"?O("Invite your coworker to dinner.",[2,8,0],"C","A simple dinner becomes a real friendship.","c","bond"):O("Join a local club.",[-2,6,2],"C","Awkward at first, and you meet kind people.","c","club");
+return {t:"Chapter 3: The Slump. Three weeks in, the excitement has worn off. "+t,o:[f,
+O("Work even harder to stay busy.",[-6,-4,8],"D","Productive, and you feel emptier.","c","grind"),
+O("Call home and talk it through.",[4,4,-2],"P","Comforting, and not a long-term fix.","c","home")]}},
+function(F){var n=F.c==="grind"?"Your long hours have been noticed.":"Your steady work has been noticed.";return {t:"Chapter 4: The Opportunity. "+n+" Your boss offers you a big project with a tight timeline.",o:[
+O("Take it on fully.",[-6,0,12],"D","A big chance, and a big load.","d","take"),
+O("Take it, but ask for support and a clear plan.",[0,2,6],"C","A smart start that keeps you steady.","d","support"),
+O("Decline for now.",[4,0,-6],"A","You protect your energy, and the chance goes elsewhere.","d","decline")]}},
+function(F){return {t:"Chapter 5: The Visitor. An old friend comes to visit for the weekend. "+(F.d==="take"?"Your project is at a critical stage.":"Your schedule is fairly open.")+" You have to decide how to spend your time.",o:[
+O("Host them fully and set work aside.",[4,10,-6],"P","Warm memories, and a few emails waiting.","e","host"),
+O("Work, and let them explore alone.",[-4,-6,6],"D","Progress for you, and they feel a little forgotten.","e","work"),
+O("Bring them into your routine.",[0,6,2],"C","Balanced and real.","e","blend")]}},
+function(F){var t=F.d==="take"?"Your project hits a major snag two days before the deadline.":F.d==="support"?"Your support person is suddenly unavailable and the plan wobbles.":"A colleague gets the project you declined, and it stings more than you expected.";return {t:"Chapter 6: The Crisis. "+t,o:[
+O("Face it directly and take responsibility.",[-4,4,6],"C","Stressful, and it earns respect."),
+O("Ask someone for help.",[2,6,2],"P","Humbling and effective."),
+O("Step back and wait it out.",[4,-4,-6],"A","It eases your stress, and the problem grows.")]}},
+function(F){return {t:"Chapter 7: The Turning Point. Half a year has passed. You look at the life you have built and ask what you want next.",o:[
+O("Double down on what you have built.",[0,2,6],"C","Steady and sure."),
+O("Make a big change, like a new role or place.",[-4,-2,4],"D","Bold and uncertain.","","",[[6,4,14],"The leap pays off, and you feel alive.",0.45]),
+O("Take a long break to reset.",[10,2,-6],"A","Recharging has its own value.")]}}
+];
+function E0(F,m,x){if(x)return {id:"fs-x",t:"The Whole Person",x:"Work, friends, and well-being all thrived. You built a life, not just a career."};
+if(F.d==="take"&&(F.c==="grind"||F.a==="driven"))return {id:"fs-a",t:"The Achiever",x:"You chased big goals and built a strong reputation. Remember to enjoy the people along the way."};
+if(F.b==="friend"||F.c==="bond"||F.e==="host")return {id:"fs-c",t:"The Connector",x:"You built a community in a new place. People are the heart of your story."};
+if(F.a==="explorer")return {id:"fs-e",t:"The Explorer",x:"You made a new city your own, one street at a time."};
+return {id:"fs-s",t:"The Steady One",x:"You found your rhythm slowly and carefully, and it holds."}}
+var SB=[
+function(F){return {t:"Chapter 1: The Invitation. After ten years, you receive an invitation to a school reunion. Old memories rush back, and not all of them are comfortable.",o:[
+O("Say yes right away.",[2,6,0],"C","You feel nervous and excited.","a","go"),
+O("Look everyone up online first.",[-4,-2,0],"A","Information, and a little comparison anxiety.","a","peek"),
+O("Decline politely.",[4,-4,0],"A","Comfortable, and a bit wistful.","a","skip")]}},
+function(F){var a=F.a==="go"?"You arrive early and the room is already buzzing.":F.a==="peek"?"You know everyone’s highlights, and you feel unprepared.":"At the last minute, a friend texts: “Come, please.” You show up late.";return {t:"Chapter 2: The Arrival. "+a,o:[
+O("Find your old best friend.",[2,8,0],"C","A warm hug and ten years of stories.","b","best"),
+O("Join the lively group.",[0,4,2],"P","Fun, and a little shallow.","b","group"),
+O("Hang near the snacks and watch.",[2,-4,0],"A","Safe, and a bit lonely.","b","edge")]}},
+function(F){return {t:"Chapter 3: The Awkward Truth. Someone mentions an old argument that damaged a friendship years ago, and the room goes quiet.",o:[
+O("Address it honestly and apologize if needed.",[-4,8,0],"C","Brave, and a weight lifts.","c","honest"),
+O("Laugh it off and change the subject.",[2,-2,0],"P","The mood returns, and the issue stays.","c","laugh"),
+O("Leave early.",[2,-6,0],"A","Peace for you and questions for everyone else.","c","leave")]}},
+function(F){var t=F.c==="honest"?"a real chance to rebuild a friendship, and a job lead.":"a job lead, though things feel a bit stiff between you.";return {t:"Chapter 4: The Offer. An old classmate offers you "+t,o:[
+O("Accept warmly.",[2,6,6],"C","Open and appreciative.","d","accept"),
+O("Ask for time to think.",[0,0,2],"P","Careful, and a little cool.","d","time"),
+O("Politely decline.",[2,-2,-4],"A","You stay independent.","d","decline")]}},
+function(F){var t=F.b==="best"?"Your old best friend texts to say they miss you already.":"The group chat from the evening goes quiet.";return {t:"Chapter 5: The Aftermath. A few weeks later, the reunion feels like a dream. "+t,o:[
+O("Keep in touch regularly.",[2,8,-2],"C","Small habits keep friendships alive.","e","keep"),
+O("Let it fade. Life is busy.",[2,-6,0],"A","Easy, and a loss.","e","fade"),
+O("Plan a trip together.",[6,8,-6],"P","Ambitious, and a little costly.","e","trip")]}},
+function(F){var t=F.e==="fade"?"surprised that you still answer.":"and they are clearly upset.";return {t:"Chapter 6: The Call. A friend from the reunion calls late at night, "+t+" They are going through a hard time.",o:[
+O("Drop everything and listen.",[-4,10,-4],"C","Heavy, and it means everything to them.","f","help"),
+O("Offer support from a distance.",[0,4,0],"P","Kind, and limited.","f","distance"),
+O("Say you are busy and promise to call back.",[2,-8,0],"A","Convenient, and it stings.","f","busy")]}}
+];
+function E1(F,m,x){if(x&&F.c==="honest")return {id:"rb-x",t:"The Whole Circle",x:"You faced the past honestly and kept the friendships alive. The circle is whole again."};
+if(F.c==="honest"&&(F.e==="keep"||F.e==="trip"))return {id:"rb-b",t:"The Bridge Builder",x:"You mended old fractures and kept the connection going."};
+if(F.f==="help")return {id:"rb-l",t:"The Loyal Friend",x:"When it counted, you showed up. That is what people remember."};
+if(F.a==="skip"||F.e==="fade")return {id:"rb-q",t:"The Quiet Observer",x:"You kept your distance, and some doors stayed closed."};
+return {id:"rb-g",t:"The Gentle Return",x:"You came back softly and found a few good people."}}
+var SC=[
+function(F){return {t:"Chapter 1: The Spark. An idea has been following you for months: a small business, a book, or a series of videos. Tonight it feels possible.",o:[
+O("Start tonight, no plan.",[4,0,4],"D","Energy and chaos.","a","start"),
+O("Write a simple plan first.",[0,0,6],"C","Boring, and useful.","a","plan"),
+O("Tell a friend and get excited together.",[2,6,2],"P","Shared energy.","a","share")]}},
+function(F){var a=F.a==="start"?"Without a plan, you are not sure what to do next.":F.a==="plan"?"Your plan looks great, and reality does not follow it.":"Your friend is busy, and your excitement fades a little.";return {t:"Chapter 2: The First Wall. "+a+" It is harder than you imagined.",o:[
+O("Push through alone.",[-6,-2,8],"D","Stubborn and tiring.","b","alone"),
+O("Ask someone for feedback.",[0,4,4],"C","Humbling, and helpful.","b","feedback"),
+O("Take a break and come back later.",[6,0,-4],"A","Rest, and a risk of drifting.","b","break")]}},
+function(F){return {t:"Chapter 3: The Doubt. A harsh comment, or a comparison to someone more successful, makes you question everything.",o:[
+O("Take what is useful and ignore the rest.",[0,2,6],"C","Mature and effective.","c","listen"),
+O("Ignore all criticism.",[2,-2,2],"D","Protected, and blind.","c","ignore"),
+O("Quit for now.",[4,0,-10],"A","Relief, and regret.","c","quit")]}},
+function(F){var t=F.c==="quit"?"A few weeks later, you are tempted back by":"Someone offers you";return {t:"Chapter 4: The Shortcut. "+t+" a fast route to success. It is not quite what you wanted.",o:[
+O("Take the shortcut.",[-4,-2,4],"D","Risky and tempting.","d","shortcut",[[4,2,14],"The shortcut works better than you expected.",0.4]),
+O("Partner with a friend.",[2,6,4],"P","Shared load and shared decisions.","d","partner"),
+O("Stay independent and keep it slow.",[0,0,4],"C","Slow, and yours.","d","solo")]}},
+function(F){var t=F.d==="partner"?"You and your partner are nervous.":"You are on your own and nervous.";return {t:"Chapter 5: The Launch. The moment of truth arrives. "+t,o:[
+O("Launch small and learn.",[0,0,6],"C","Low risk and honest feedback.","e","small"),
+O("Wait until it is perfect.",[4,0,-4],"A","Safe, and perfect never comes.","e","wait"),
+O("Launch big with a lot of noise.",[-4,2,2],"D","Bold.","e","big",[[6,6,14],"It catches fire and attention pours in.",0.4])]}},
+function(F){var t=F.e==="wait"?"Months later, you are still polishing.":"Some people noticed. It is not a huge hit, and it is real.";return {t:"Chapter 6: The Result. "+t+" What now?",o:[
+O("Celebrate with the people who supported you.",[6,8,0],"P","Joy, shared.","f","celebrate"),
+O("Learn from it and improve.",[0,2,6],"C","A growth mindset.","f","iterate"),
+O("Move on to the next idea.",[2,0,2],"D","Restless and curious.","f","next")]}}
+];
+function E2(F,m,x){if(x&&F.c==="listen")return {id:"dp-x",t:"The Visionary",x:"You listened, learned, and stayed true to your idea. It is becoming something lasting."};
+if(F.d==="partner"||F.a==="share")return {id:"dp-c",t:"The Collaborator",x:"Your dream grew because you invited others into it."};
+if(F.a==="plan"&&(F.c==="listen"||F.e==="small"))return {id:"dp-b",t:"The Builder",x:"Step by step, you built something real."};
+if(F.a==="start"||F.c==="ignore")return {id:"dp-d",t:"The Dreamer",x:"Your energy is contagious, even if the details are messy."};
+return {id:"dp-l",t:"The Late Bloomer",x:"You are not there yet, and the idea is still alive."}}
+var SD=[
+function(F){return {t:"Chapter 1: The Wake-Up Call. After weeks of exhaustion, you realize you have been running on empty. Falling asleep on the couch at 6 pm makes it clear that something has to change.",o:[
+O("Book a long weekend to rest.",[8,0,-4],"A","Rest helps, and the pile grows.","a","rest"),
+O("Build a simple routine: sleep, water, short walks.",[4,0,2],"C","Small things add up.","a","routine"),
+O("Overhaul everything at once.",[-4,0,4],"D","Ambitious, and fragile.","a","overhaul")]}},
+function(F){var a=F.a==="rest"?"You feel lighter, and the to-do list is waiting.":F.a==="routine"?"The routine feels small, almost too small.":"You are busy and a bit overwhelmed.";return {t:"Chapter 2: The First Days. "+a+" A friend invites you to a late-night event.",o:[
+O("Go for an hour, then head home.",[0,6,0],"C","Balance, and a little FOMO.","b","balance"),
+O("Go all out like old times.",[-6,8,0],"P","Fun, and the routine wobbles.","b","party"),
+O("Skip it and rest.",[6,-4,0],"A","Rest, and you miss the connection.","b","skip")]}},
+function(F){return {t:"Chapter 3: The Setback. A stressful week hits and the new habits slip. You feel the old tiredness creeping back.",o:[
+O("Restart with the smallest version of the routine.",[4,0,2],"C","Resilient.","c","restart"),
+O("Tell yourself it is pointless.",[-6,0,-4],"A","Self-criticism drains energy.","c","giveup"),
+O("Ask a friend to do it with you.",[2,6,0],"P","Shared habits stick.","c","buddy")]}},
+function(F){return {t:"Chapter 4: The Boundary. Your boss sends a request after hours, again.",o:[
+O("Reply in the morning and set a clear limit.",[4,-2,2],"C","Firm and polite.","d","limit"),
+O("Answer immediately to be safe.",[-6,0,4],"D","Responsive, and tired.","d","always"),
+O("Ignore it and hope it goes away.",[2,-2,-4],"A","Peace now, and a risk later.","d","ignore")]}},
+function(F){var t=F.c==="giveup"?"You picked the routine back up, slowly.":"You have kept most of your routine.";return {t:"Chapter 5: The Plateau. "+t+" The early excitement has faded and progress feels slow.",o:[
+O("Track small wins and celebrate them.",[4,2,4],"C","Motivating.","e","track"),
+O("Switch things up to keep it fresh.",[2,0,2],"P","Novelty helps.","e","switch"),
+O("Push harder to speed things up.",[-6,0,6],"D","Fast, and fragile.","e","push")]}},
+function(F){return {t:"Chapter 6: The Test. A big deadline and a family event land in the same week.",o:[
+O("Plan it carefully and protect your rest.",[4,2,2],"C","Wise and sustainable.","f","plan"),
+O("Power through and rest later.",[-8,0,8],"D","It works, and there is a bill.","f","power"),
+O("Skip the family event.",[2,-8,2],"A","Relief, and a cost.","f","skipfam")]}}
+];
+function E3(F,m,x){if(x)return {id:"er-x",t:"The Sustainable Spark",x:"Energy, people, and progress all feel steady. Your routine is truly yours."};
+if(F.a==="routine"&&(F.c==="restart"||F.c==="buddy")&&F.d==="limit")return {id:"er-r",t:"The Rhythm Keeper",x:"You built habits that bend without breaking."};
+if(F.c==="buddy"||F.b==="balance")return {id:"er-b",t:"The Buddy System",x:"You did not do it alone, and that made it last."};
+if(F.a==="overhaul"||F.e==="push"||F.f==="power")return {id:"er-p",t:"The Sprinter",x:"Fast results, and a reminder that you are not a machine."};
+return {id:"er-s",t:"The Slow Starter",x:"You started small and kept going, and that is a real beginning."}}
+var SE=[
+function(F){return {t:"Chapter 1: The Move-In. A new neighbor moves in next door. They look tired and carry boxes up the stairs alone.",o:[
+O("Offer to carry a few boxes.",[-2,8,0],"P","A small act that goes a long way.","a","help"),
+O("Wave and say hello.",[0,4,0],"C","Friendly and easy.","a","wave"),
+O("Mind your own business.",[2,-2,0],"A","Peaceful, and distant.","a","ignore")]}},
+function(F){var t=F.a==="ignore"?"you barely meet, and you start to hear their music late at night.":"you chat in the hallway, and then you notice their music late at night.";return {t:"Chapter 2: The Noise. Over the next week, "+t,o:[
+O("Mention it kindly in the hallway.",[0,4,0],"C","Direct and warm.","b","kind"),
+O("Leave an anonymous note.",[-2,-4,0],"A","Indirect and impersonal.","b","note"),
+O("Say nothing and use earplugs.",[-4,0,0],"A","Silent endurance.","b","silent")]}},
+function(F){var t=F.b==="kind"?"Your neighbor apologizes and invites you to a small housewarming.":"Your neighbor knocks and invites you to a small housewarming.";return {t:"Chapter 3: The Invitation. "+t,o:[
+O("Go and bring something.",[2,8,-2],"P","Warm and social.","c","go"),
+O("Go for ten minutes only.",[0,4,0],"C","A reasonable compromise.","c","short"),
+O("Politely decline.",[2,-4,0],"A","Calm, and a missed chance.","c","decline")]}},
+function(F){return {t:"Chapter 4: The Problem. A pipe leaks between your apartments, and the damage is on your side.",o:[
+O("Talk to your neighbor first and solve it together.",[-2,4,2],"C","Cooperative.","d","talk"),
+O("Call the landlord immediately.",[0,-4,4],"D","Fast and formal.","d","landlord"),
+O("Fix it yourself quietly.",[-6,0,-4],"P","Heroic and costly.","d","fix")]}},
+function(F){return {t:"Chapter 5: The Community. The building starts a small group to share tools, meals, and favors.",o:[
+O("Join and help organize.",[-2,8,4],"C","Meaningful.","e","join"),
+O("Join quietly and observe.",[0,4,0],"P","Easy.","e","observe"),
+O("Skip it.",[2,-4,0],"A","Peaceful.","e","skip")]}},
+function(F){return {t:"Chapter 6: The Request. Your neighbor asks you to watch their pet for a weekend. You have plans.",o:[
+O("Say yes and adjust your plans.",[-4,8,-2],"P","Generous.","f","yes"),
+O("Offer a shorter version of help.",[0,4,0],"C","Balanced.","f","half"),
+O("Say no honestly.",[2,-2,2],"A","Honest and firm.","f","no")]}}
+];
+function E4(F,m,x){if(x)return {id:"nb-x",t:"The Heart of the Building",x:"You turned a corridor into a community, and people look out for each other."};
+if(F.a==="help"||(F.c==="go"&&F.e==="join"))return {id:"nb-f",t:"The Good Neighbor",x:"Your kindness set the tone for the whole building."};
+if(F.d==="landlord"&&F.e!=="join")return {id:"nb-p",t:"The By-the-Book",x:"You kept things fair and formal, and everyone knows where they stand."};
+if(F.a==="ignore"||F.e==="skip")return {id:"nb-q",t:"The Quiet Resident",x:"You kept your peace, and the building kept its distance."};
+return {id:"nb-b",t:"The Friendly Wave",x:"A small hello grew into a comfortable, simple friendship."}}
+var SF=[
+function(F){return {t:"Chapter 1: The Plan. A friend suggests a spontaneous road trip for a long weekend. You have a little money and a bit of fear.",o:[
+O("Say yes and pack tonight.",[4,6,-4],"P","Spontaneous.","a","yes"),
+O("Plan the route carefully first.",[0,2,2],"C","Prepared.","a","plan"),
+O("Say maybe and decide later.",[-2,-2,0],"A","Indecisive.","a","maybe")]}},
+function(F){var t=F.a==="plan"?"Your careful route hits an unexpected road closure.":"A road closure sends you down an unfamiliar road.";return {t:"Chapter 2: The Detour. "+t,o:[
+O("Take the detour and see what happens.",[2,4,0],"D","Adventurous.","b","detour"),
+O("Stick to the plan and wait.",[0,0,2],"C","Steady.","b","wait"),
+O("Argue about directions.",[-6,-6,0],"A","Tense.","b","argue")]}},
+function(F){return {t:"Chapter 3: The Small Town. You arrive in a small town with one café and a friendly stranger who recommends a hidden spot.",o:[
+O("Follow the stranger’s advice.",[4,4,0],"P","Open-hearted.","c","trust",[[10,8,0],"The hidden spot is the highlight of the trip.",0.5]),
+O("Check reviews online first.",[0,0,2],"C","Cautious.","c","check"),
+O("Stay at the café and rest.",[6,-2,0],"A","Cozy.","c","rest")]}},
+function(F){return {t:"Chapter 4: The Money Problem. The budget runs tight, and an expensive attraction tempts your group.",o:[
+O("Suggest free alternatives.",[2,2,4],"C","Creative.","d","free"),
+O("Splurge. It might never happen again.",[6,4,-8],"P","Joyful.","d","splurge"),
+O("Quietly worry and say nothing.",[-6,-4,0],"A","Stressful.","d","worry")]}},
+function(F){var t=F.b==="argue"?"The earlier tension resurfaces.":"A small difference in what you each want comes up.";return {t:"Chapter 5: The Disagreement. "+t+" Your friend wants to stay longer, and you want to go home.",o:[
+O("Talk openly and find a compromise.",[2,6,0],"C","Mature.","e","talk"),
+O("Insist on your plan.",[-4,-6,2],"D","Firm, and cold.","e","insist"),
+O("Give in to keep the peace.",[-4,2,0],"P","Peaceful, and a little resentful.","e","give")]}},
+function(F){return {t:"Chapter 6: The Last Night. Under a wide sky, you are tired, happy, and honest.",o:[
+O("Share something you have never told them.",[2,10,0],"C","Deep.","f","share"),
+O("Plan the next trip together.",[4,6,-2],"P","Hopeful.","f","next"),
+O("Enjoy the quiet in silence.",[6,2,0],"A","Peaceful.","f","quiet")]}}
+];
+function E5(F,m,x){if(x)return {id:"rt-x",t:"The Best Trip Ever",x:"Every mile added a memory, and the friendship is deeper than ever."};
+if(F.e==="talk"&&(F.f==="share"||F.f==="next"))return {id:"rt-c",t:"The Real Friends",x:"You argued, listened, and came home closer."};
+if(F.b==="detour"||F.c==="trust")return {id:"rt-a",t:"The Adventurer",x:"You said yes to the unexpected, and it paid you back."};
+if(F.a==="plan"&&F.d==="free")return {id:"rt-p",t:"The Planner",x:"Smart choices, and a trip that stayed within reach."};
+return {id:"rt-q",t:"The Quiet Passenger",x:"You enjoyed the ride, even if you stayed in your own thoughts."}}
+var STORIES=[{n:"Fresh Start",ch:STORY,e:E0},{n:"The Reunion",ch:SB,e:E1},{n:"The Dream Project",ch:SC,e:E2},{n:"The Energy Reset",ch:SD,e:E3},{n:"The New Neighbor",ch:SE,e:E4},{n:"The Road Trip",ch:SF,e:E5}],ENDTOT=30,CUR=STORIES[0];
+var RARE=[
+{t:"Rare moment: an old mentor invites you to dinner with three people who could change your career.",o:[
+["Go prepared, with questions ready.",[-2,4,10],"C","Confident and focused."],
+["Go and just be yourself.",[2,6,2],"P","Natural and warm.","",[[6,10,10],"You click with one of them and a door opens.",0.5]],
+["Decline. It feels like too much.",[4,-2,-8],"A","Calm, and a missed chance."]]},
+{t:"Rare moment: you find a letter you wrote to yourself five years ago.",o:[
+["Read it carefully and reflect.",[6,2,4],"C","Surprising and grounding."],
+["Write a new one for five years from now.",[6,2,6],"C","A kind gift to your future self."],
+["Put it away unread.",[2,0,-2],"A","The past can wait."]]},
+{t:"Rare moment: every commitment you had this week cancels at once, and you have a free day.",o:[
+["Rest completely.",[10,0,-4],"A","A rare luxury."],
+["Finally do something you have always postponed.",[4,2,8],"D","A satisfying surprise."],
+["Call everyone you love.",[4,10,-4],"P","A day full of voices."]]},
+{t:"Rare moment: you get a chance to forgive someone who once hurt you deeply.",o:[
+["Reach out and talk.",[-2,8,0],"C","Brave, and it brings closure either way.","",[[8,12,0],"The conversation heals more than you expected.",0.4]],
+["Forgive silently and move on.",[6,2,0],"P","Peace on your own terms."],
+["Keep your distance.",[-2,-4,2],"A","Protected, and still carrying it."]]},
+{t:"Rare moment: your community asks you to lead a small project for a good cause.",o:[
+["Take the lead.",[-4,6,6],"D","Meaningful and demanding.","",[[6,12,8],"The project brings people together, and it shows.",0.4]],
+["Volunteer a few hours.",[2,4,2],"C","Generous within limits."],
+["Politely pass.",[4,-2,-2],"A","Your time is yours."]]}
+];
+var KEY="lifeMoves.v1",app=document.getElementById("app");
+var MODES={Easy:{drift:0,timer:0,d:"No pressure. Learn the moves."},Normal:{drift:2,timer:0,d:"Life slowly wears you down each turn."},Hard:{drift:4,timer:15,d:"Faster drain and 15 seconds per decision."},Daily:{drift:2,timer:0,d:"Same moments for everyone today."},Story:{drift:1,timer:0,d:"A different connected story each time. Early choices shape the ending."}};
+var L=["Wellbeing","Relationships","Progress"],ST={C:["The Balancer","You face things early and look after yourself and others. Watch for over-planning."],D:["The Go-Getter","You make things happen. Watch the cost to your health and relationships."],P:["The People-Pleaser","You protect the people around you. Practice saying what you need, too."],A:["The Avoider","You dodge friction and hard choices. Problems grow while you wait, so try small early steps."]};
+var mode,mn,Q,i,m,tg,R,tm,evn,EVQ,F,gw,jk,ds,prevM=[50,50,50],anim=true,fx="";
+function cl(v){return Math.max(0,Math.min(100,v))}
+function ld(){try{return JSON.parse(localStorage.getItem(KEY))||{}}catch(e){return {}}}
+var SUPPORT="";
+function supp(){return SUPPORT?'<a class="sup" href="'+SUPPORT+'" target="_blank" rel="noopener">☕ Enjoying it? Support the game</a>':""}
+function hasB(b){return (ld().badges||[]).indexOf(b)>=0}
+function mk(n){var c=CUR.ch[n](F);c.o=shuf(c.o);return c}
+function sv(o){try{localStorage.setItem(KEY,JSON.stringify(o))}catch(e){}}
+function rng(s){return function(){s|=0;s=s+0x6D2B79F5|0;var t=Math.imul(s^s>>>15,1|s);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function shuf(a){a=a.slice();for(var k=a.length-1;k>0;k--){var j=Math.floor(R()*(k+1)),x=a[k];a[k]=a[j];a[j]=x}return a}
+function today(){return new Date().toISOString().slice(0,10)}
+function meters(){return '<div class="meters">'+m.map(function(v,k){return '<div><div class="mt">'+["💚","🤝","🚀"][k]+" "+L[k]+' '+v+'</div><div class="bar'+(v<25?" low":"")+'"><i data-w="'+v+'" style="width:'+prevM[k]+'%"></i></div></div>'}).join("")+'</div>'}
+function legend(){var X={C:"you face things early and weigh everyone’s needs, including yours.",D:"you push for results and speed, sometimes at a personal cost.",P:"you protect other people’s feelings, sometimes at the cost of your own needs.",A:"you delay or dodge hard moments, which can let problems grow."};
+return '<details class="card"><summary><b>What do the meters, titles, and styles mean?</b></summary><p class="sm" style="margin-top:10px"><b>Meters</b><br>Wellbeing: energy, health, and mood.<br>Relationships: friends, family, and community.<br>Progress: work, goals, and money.</p><p class="sm"><b>Titles</b> (from your average meter score)<br>Thriving, 80 or more: you balanced all three areas.<br>Finding Your Way, 60 to 79: strong instincts with a few trade-offs.<br>Learning as You Go, 40 to 59: you got through it and have lessons to use.<br>Barely Coping, under 40: you were putting out fires.<br>Meltdown: any meter reached zero.</p><p class="sm"><b>Styles</b> (from the kind of choices you pick most)<br>'+Object.keys(ST).map(function(k){return ST[k][0]+": "+X[k]}).join("<br>")+'</p><p class="sm"><b>Luck</b><br>🎲 on an option means a gamble that might pay off or not. Random life events can bring good or bad luck between moments, and rarely a jackpot or a disaster, and you choose how to respond to those.</p><p class="sm"><b>Unlocks</b><br>⚖️ Balanced: finish a run with all three meters at 60 or more to unlock rare moments.<br>🎭 Collector: find 4 story endings to unlock a secret ending in every story.<br>📖 Story arc picks a different story each time.</p></details>'}
+function home(){var s=ld(),b=s.badges||[];
+app.innerHTML='<h1><span class="g">Life Moves</span> 🧭</h1><p class="mu">Ten everyday life moments each run, drawn from a bigger pool in a new order. Every choice helps one thing and costs another. Some choices ripple forward, and random life events can hit at any time, for better or worse. Keep Wellbeing, Relationships, and Progress above zero.</p>'+
+'<div class="card sm"><b>'+(s.plays||0)+'</b> runs played · daily streak <b>'+(s.streak||0)+'</b> · endings <b>'+((s.endings||[]).length)+'/'+ENDTOT+'</b><div class="mu" style="margin-top:6px">'+(b.indexOf("⚖️ Balanced")>=0?"✅":"🔒")+' Rare moments (earn ⚖️ Balanced) · '+(b.indexOf("🎭 Collector")>=0?"✅":"🔒")+' Secret endings (earn 🎭 Collector)</div>'+(b.length?'<div style="margin-top:8px">'+b.map(function(x){return '<span class="pill">'+x+'</span>'}).join("")+'</div>':'')+'</div>'+
+'<div class="modes">'+Object.keys(MODES).map(function(k){var bs=(s.best||{})[k];return '<button data-m="'+k+'"><b>'+(k==="Daily"?"📅 Daily challenge":k==="Story"?"📖 Story arc":k)+'</b><small>'+MODES[k].d+(bs?" Best: "+bs:"")+'</small></button>'}).join("")+'</div>'+legend()+'<button id="an" style="text-align:center">Animations: '+(anim?"on":"off")+'</button>'+supp();
+Array.prototype.forEach.call(app.querySelectorAll("button"),function(b){b.onclick=function(){start(b.getAttribute("data-m"))}});document.getElementById("an").onclick=function(){anim=!anim;try{localStorage.setItem("lifeMoves.anim",anim?"on":"off")}catch(e){}setAnim();home()}}
+function start(k){mode=k;var c=MODES[k];R=rng(k==="Daily"?parseInt(today().replace(/-/g,""),10):Date.now());
+if(k==="Story"){F={};var st=ld(),nn;do{nn=Math.floor(Math.random()*STORIES.length)}while(nn===st.lastStory&&STORIES.length>1);CUR=STORIES[nn];st.lastStory=nn;sv(st);Q=CUR.ch.map(function(){return null});Q[0]=mk(0)}else{var P=S.concat(k!=="Daily"&&hasB("⚖️ Balanced")?RARE:[]);Q=shuf(P.map(function(_,x){return x})).slice(0,10).map(function(x){return {t:P[x].t,o:shuf(P[x].o)}})}
+i=0;m=[50,50,50];prevM=[50,50,50];mn=50;tg={C:0,D:0,P:0,A:0};evn=0;gw=jk=ds=0;EVQ=shuf(EV);q()}
+function head(){return '<div class="step"><span>'+(mode==="Story"?CUR.n:mode)+' · '+(mode==="Story"?"Chapter ":"Moment ")+(i+1)+' of '+Q.length+'</span><span>'+(m.some(function(v){return v<25})?'<span class="ev">Danger zone</span>':'')+'</span></div>'+meters()}
+function q(){clearInterval(tm);var s=Q[i],c=MODES[mode];
+app.innerHTML=head()+(c.timer?'<div class="bar" style="margin-bottom:12px"><i id="tmb" style="width:100%;transition:none"></i></div>':'')+'<div class="card"><p'+(s.t.indexOf("Ripple")===0?' class="ev"':s.t.indexOf("Good")===0?' class="gd"':'')+'>'+s.t+'</p></div>'+s.o.map(function(o,k){return '<button data-k="'+k+'">'+o[0]+(o[5]?" 🎲":"")+'</button>'}).join("");
+Array.prototype.forEach.call(app.querySelectorAll("button"),function(b){b.onclick=function(){pick(+b.getAttribute("data-k"))}});
+if(c.timer){var t0=Date.now();tm=setInterval(function(){var p=1-(Date.now()-t0)/(c.timer*1000),e=document.getElementById("tmb");if(e)e.style.width=Math.max(0,p*100)+"%";if(p<=0){clearInterval(tm);pick(-1)}},100)}}
+function pick(k){clearInterval(tm);var c=MODES[mode],o=k<0?["",[-6,-6,-6],"A","Time ran out. Indecision is also a decision."]:Q[i].o[k];
+var al=o[5],hit=al&&R()<al[2],dl=hit?al[0]:o[1],fb=hit?al[1]:o[3];if(hit){gw++;fx="conf"}
+m=m.map(function(v,j){return cl(v+dl[j]-c.drift)});mn=Math.min(mn,m[0],m[1],m[2]);tg[o[2]]++;if(o[6])F[o[6][0]]=o[6][1];
+if(o[4]&&FU[o[4]]&&Q.indexOf(FU[o[4]])<0)Q.splice(Math.min(Q.length,i+3),0,FU[o[4]]);
+var d=dl.map(function(x,j){return x?'<span class="'+(x>0?"up":"dn")+'">'+L[j]+" "+(x>0?"+":"")+x+'</span>':""}).filter(Boolean).join(" · ");
+app.innerHTML=head()+'<div class="card"><p class="d">'+d+'</p><div class="fb">'+(hit?"🎲 Lucky break! ":al?"🎲 It did not pay off. ":"")+fb+'</div>'+(c.drift?'<p class="mu sm">Life pressure: −'+c.drift+' to all meters</p>':'')+'</div><button class="pri" id="nx">'+(i<Q.length-1?"Next":"See results")+'</button>';
+document.getElementById("nx").onclick=function(){i++;if(mode==="Story"&&i<Q.length&&!Q[i])Q[i]=mk(i);if(m.some(function(v){return v<=0}))end(true);else if(i<Q.length&&evn<4&&EVQ.length&&R()<0.5)ev();else if(i<Q.length)q();else end(false)}}
+function ev(){var r=R(),k=r<0.2?"J":r<0.4?"X":"",e=k==="J"?JP[Math.floor(R()*JP.length)]:k==="X"?XD[Math.floor(R()*XD.length)]:EVQ.pop();evn++;if(k==="J"){jk=1;fx="big"}if(k==="X"){ds=1;fx="shake"}m=m.map(function(v,j){return k==="X"?Math.max(Math.min(v,5),cl(v+e[1][j])):cl(v+e[1][j])});mn=Math.min(mn,m[0],m[1],m[2]);
+var d=e[1].map(function(x,j){return x?'<span class="'+(x>0?"up":"dn")+'">'+L[j]+" "+(x>0?"+":"")+x+'</span>':""}).filter(Boolean).join(" · ");
+app.innerHTML='<div class="step"><span>'+(k==="J"?"🌟 Jackpot!":k==="X"?"⚡ Disaster":"🎲 Random life event")+'</span></div>'+meters()+'<div class="card"><p>'+e[0]+'</p><p class="d">'+d+'</p></div>'+(k?RS[k].map(function(o,x){return '<button data-x="'+x+'">'+o[0]+(o[5]?" 🎲":"")+'</button>'}).join(""):'<button class="pri" id="nx">Continue</button>');
+if(k)Array.prototype.forEach.call(app.querySelectorAll("button"),function(b){b.onclick=function(){res(RS[k][+b.getAttribute("data-x")])}});
+else document.getElementById("nx").onclick=function(){if(m.some(function(v){return v<=0}))end(true);else q()}}
+function res(o){var al=o[5],hit=al&&R()<al[2],dl=hit?al[0]:o[1],fb=hit?al[1]:o[3];if(hit){gw++;fx="conf"}m=m.map(function(v,j){return cl(v+dl[j])});mn=Math.min(mn,m[0],m[1],m[2]);tg[o[2]]++;
+var d=dl.map(function(x,j){return x?'<span class="'+(x>0?"up":"dn")+'">'+L[j]+" "+(x>0?"+":"")+x+'</span>':""}).filter(Boolean).join(" · ");
+app.innerHTML='<div class="step"><span>Your response</span></div>'+meters()+'<div class="card"><p class="d">'+d+'</p><div class="fb">'+(hit?"🎲 Lucky break! ":al?"🎲 It did not pay off. ":"")+fb+'</div></div><button class="pri" id="nx">Continue</button>';
+document.getElementById("nx").onclick=function(){if(m.some(function(v){return v<=0}))end(true);else q()}}
+function end(over){var sc=Math.round((m[0]+m[1]+m[2])/3),s=ld(),n=[],t,msg;s.best=s.best||{};s.badges=s.badges||[];
+if(over){sc=Math.min(sc,39);var z=m.indexOf(Math.min(m[0],m[1],m[2]));t="Meltdown";msg=L[z]+" hit zero and everything started to unravel. Balance matters more than winning one area."}
+else if(sc>=80){t="Thriving";msg="A rare balance. You are looking after yourself, your people, and your goals."}
+else if(sc>=60){t="Finding Your Way";msg="Solid instincts. A few moves could be braver or kinder to yourself."}
+else if(sc>=40){t="Learning as You Go";msg="You survived, which is real. Replay and try the options you skipped."}
+else{t="Barely Coping";msg="Lots of urgent fixes. Try small, early steps before things pile up."}
+var ts=Object.keys(tg).sort(function(a,b){return tg[b]-tg[a]})[0],nb=[];
+function bd(x){if(s.badges.indexOf(x)<0){s.badges.push(x);nb.push(x)}}
+var se=mode==="Story"&&!over?CUR.e(F,m,hasB("🎭 Collector")&&Math.min(m[0],m[1],m[2])>=70):null,ne=false;s.endings=s.endings||[];
+if(se){ne=s.endings.indexOf(se.id)<0;if(ne)s.endings.push(se.id);bd("📖 Storyteller");if(s.endings.length>=4)bd("🎭 Collector")}
+if(gw>=2)bd("🍀 Lucky");if(jk)bd("🌟 Jackpot");if(ds&&!over)bd("⚡ Storm Survivor");
+if(!over&&mode==="Hard")bd("🛡️ Survived Hard");
+if(!over&&Math.min(m[0],m[1],m[2])>=60)bd("⚖️ Balanced");
+if(!over&&mn<20)bd("🔥 Comeback");
+if(mode==="Daily"&&s.last!==today()){var y=new Date(Date.now()-864e5).toISOString().slice(0,10);s.streak=s.last===y?(s.streak||0)+1:1;s.last=today();if(s.streak>=3)bd("📅 3-day streak")}
+var nbest=sc>(s.best[mode]||0);if(nbest)s.best[mode]=sc;s.plays=(s.plays||0)+1;sv(s);fx=over?"shake":(se||sc>=80)?"big":sc>=60?"conf":"";
+var share=encodeURIComponent("");
+app.innerHTML='<h1>'+t+'</h1><div class="card"><p class="d">Score '+sc+'/100'+(nbest?" · new best!":"")+'</p><p>'+msg+'</p><p class="mu sm">Your title comes from the average of your three meters at the end.</p></div>'+meters()+
+'<div class="card"><p class="d">Your style: '+ST[ts][0]+'</p><p>'+ST[ts][1]+'</p><p class="mu sm">Your choices: '+Object.keys(tg).map(function(k){return ST[k][0]+" "+tg[k]}).join(" · ")+'</p></div>'+
+(nb.length?'<div class="card"><p class="d">New badges</p>'+nb.map(function(x){return '<span class="pill">'+x+'</span>'}).join("")+(nb.indexOf("⚖️ Balanced")>=0?'<p class="sm">Unlocked: rare moments in the regular pool.</p>':'')+(nb.indexOf("🎭 Collector")>=0?'<p class="sm">Unlocked: secret endings in every story.</p>':'')+'</div>':'')+
+(se?'<div class="card"><p class="d">Your ending: '+se.t+(ne?" · new!":"")+'</p><p>'+se.x+'</p><p class="mu sm">Endings found: '+s.endings.length+" of "+ENDTOT+'</p></div>':"")+legend()+'<button class="pri" id="sh">Copy my result</button><p id="shm" class="mu sm"></p><button id="again">Play again</button><button id="hm">Main menu</button>'+supp();
+document.getElementById("sh").onclick=function(){var tx="Life Moves 🧭 "+mode+" · "+sc+"/100 · "+t+" · "+ST[ts][0]+". Can you beat it?",e=document.getElementById("shm");
+try{navigator.clipboard.writeText(tx).then(function(){e.textContent="Copied!"},function(){e.textContent=tx})}catch(x){e.textContent=tx}};
+document.getElementById("again").onclick=function(){start(mode)};document.getElementById("hm").onclick=home}
+try{anim=localStorage.getItem("lifeMoves.anim")!=="off"}catch(e){}
+function confetti(n){if(!anim)return;var w=document.createElement("div");w.className="cf";var cs=["#ff5fa0","#ffd23f","#2dc98f","#3d85ff","#7c4dff","#ff9a3c"];for(var k=0;k<n;k++){var s=document.createElement("i");s.style.left=Math.random()*100+"%";s.style.background=cs[k%cs.length];s.style.animationDelay=Math.random()*.7+"s";s.style.animationDuration=(1.8+Math.random()*1.8)+"s";w.appendChild(s)}document.body.appendChild(w);setTimeout(function(){if(w.parentNode)w.parentNode.removeChild(w)},4600)}
+function shake(){if(!anim)return;app.classList.add("shake");setTimeout(function(){app.classList.remove("shake")},800)}
+function setAnim(){if(document.documentElement)document.documentElement.className=anim?"":"noanim"}
+setAnim();
+if(typeof MutationObserver!=="undefined")new MutationObserver(function(){requestAnimationFrame(function(){requestAnimationFrame(function(){Array.prototype.forEach.call(document.querySelectorAll(".bar i[data-w]"),function(e){e.style.width=e.getAttribute("data-w")+"%"});if(m){Array.prototype.forEach.call(document.querySelectorAll(".meters>div"),function(e,k){if(prevM[k]!==m[k])e.classList.add(m[k]>prevM[k]?"upb":"dnb")});prevM=m.slice()}if(fx){var f=fx;fx="";if(f==="shake")shake();else confetti(f==="big"?100:50)}})})}).observe(app,{childList:true});
+home();
+</script>
+</body>
+</html>
